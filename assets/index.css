@@ -1,0 +1,539 @@
+:root {
+    --body-font: sans-serif;
+}
+
+/* Example Index Styles */
+.example-index {
+    margin: 20px 0 40px 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.index-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.index-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-color: white;
+    border: 3px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100px;
+    height: 75px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.index-btn:hover {
+    border-color: #007bff;
+    transform: translateY(-2px) scale(1.15);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+.index-btn.active {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    transform: scale(1.15);
+}
+
+.index-btn img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 4px;
+}
+
+.index-btn span {
+    display: none;
+}
+
+/* Example Content Styles */
+.example-content {
+    display: none;
+}
+
+.example-content.active {
+    display: block;
+}
+
+.caption {
+    text-align: center;
+    font-style: italic;
+}
+
+/* Caption containers in video grids should match video dimensions and behavior */
+.paper__section-grid .caption {
+    width: 100%;
+    aspect-ratio: 832 / 480; /* Hardcoded */
+    overflow-y: auto;
+    overflow-x: hidden;
+    text-align: left;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #fafafa;
+    font-size: 14px;
+    line-height: 1.4;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+}
+
+/* Ensure text containers in grid behave like videos */
+.paper__section-grid > div > .caption {
+    height: auto;
+    min-height: 0;
+}
+
+.subcaption {
+    text-align: center;
+}
+
+/* Generic styles for expandable content buttons */
+.toggle-expandable {
+    display: block;
+    margin: 12px auto;
+    padding: 8px 16px;
+    color: #224b8d;
+    background-color: rgba(34, 75, 141, 0.08);
+    border: 1px solid #224b8d;
+    border-radius: 6px;
+    cursor: pointer;
+    max-width: 140px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.toggle-expandable:hover {
+    background-color: rgba(34, 75, 141, 0.15);
+    border-color: #1a3a73;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(34, 75, 141, 0.2);
+}
+
+.toggle-expandable:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(34, 75, 141, 0.3);
+}
+
+.expandable-content {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.expandable-content.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Example divider styles */
+.example-divider {
+    margin: 2rem 0;
+    border: none;
+    height: 1px;
+    /* background: #ddd; */
+    background: linear-gradient(to right, transparent, #ddd, transparent);
+}
+
+/* Comparison button styles */
+.comparison-btn {
+    padding: 10px 16px;
+    margin: 5px;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057;
+    transition: all 0.2s ease-in-out;
+    min-width: 140px;
+}
+
+.comparison-btn:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.comparison-btn.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.comparison-btn.active:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Comparison display styles */
+#comparison-display {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Video control button styles */
+.video-control-btn {
+    padding: 12px 20px;
+    margin: 8px;
+    background-color: #28a745;
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease-in-out;
+    min-width: 160px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+}
+
+.video-control-btn:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.video-control-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.4);
+}
+
+.video-control-btn.active {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.video-control-btn.active:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* Video container styles */
+.video-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.video-container video {
+    width: 100%;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.video-container .video-label {
+    margin-top: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 修改：简单视频切换按钮样式 - 与comparison-btn保持一致 */
+.simple-video-btn {
+    padding: 10px 16px;
+    margin: 5px;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057;
+    transition: all 0.2s ease-in-out;
+    min-width: 140px;
+}
+
+.simple-video-btn:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.simple-video-btn.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.simple-video-btn.active:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Editing button styles - 专门为Video Editing部分设计 */
+.editing-btn {
+    padding: 10px 16px;
+    margin: 5px;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057;
+    transition: all 0.2s ease-in-out;
+    min-width: 140px;
+}
+
+.editing-btn:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.editing-btn.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.editing-btn.active:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* 简单视频容器样式 */
+.simple-video-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.simple-video-container video {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Beautiful Button Styles - 深灰色配色，大圆角细边框，无阴影 */
+.beautiful-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 8px;
+    border-radius: 16px;
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border: 1px solid #004e98;
+    background-color: #f5f5f5;
+    color: #004e98;
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+    text-align: center;
+}
+
+.beautiful-btn:hover {
+    background-color: #004e98;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.beautiful-btn:active {
+    transform: translateY(0);
+}
+
+/* arXiv Button - 深灰色风格 */
+.arxiv-btn {
+    background-color: #fff;
+    color: #004e98;
+    border-color: #004e98;
+}
+
+.arxiv-btn:hover {
+    background-color: #004e98;
+    color: #fff;
+    border-color: #004e98;
+}
+
+/* Code Button - 深灰色风格 */
+.code-btn {
+    background-color: #fff;
+    color: #004e98;
+    border-color: #004e98;
+}
+
+.code-btn:hover {
+    background-color: #004e98;
+    color: #fff;
+    border-color: #004e98;
+}
+
+/* Apply 4px border radius to all videos and images */
+video, img {
+    border-radius: 4px;
+}
+
+/* 放大 paper__section-title 字体 */
+.paper__section-title {
+    font-size: 1.75rem !important; /* 从 1.25rem 增加到 1.75rem */
+    
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .beautiful-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-width: 140px;
+    }
+    
+    .paper__section-grid {
+        margin-left: 10% !important;
+        margin-right: 10% !important;
+    }
+    
+    .index-buttons {
+        gap: 10px;
+    }
+    
+    .index-btn {
+        min-width: 100px;
+        padding: 8px;
+    }
+    
+    /* 移除固定尺寸，让图片占满按钮 */
+    .index-btn img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+    
+    .index-btn span {
+        font-size: 11px;
+    }
+
+    .paper__section-title {
+        font-size: 1.5rem !important; /* 移动端稍微小一点 */
+    }
+}
+
+/* BibTeX Section Styles */
+.bibtex-container {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.bibtex-container pre {
+    background-color: transparent;
+    color: #333;
+    font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+    font-size: 1rem;
+    line-height: 1.3;
+    margin: 0 0 1rem 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.bibtex-copy-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto;
+}
+
+.bibtex-copy-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.bibtex-copy-btn:active {
+    transform: translateY(0);
+}
+
+.bibtex-copy-btn.copied {
+    background-color: #28a745;
+}
+
+.bibtex-copy-btn.copied:hover {
+    background-color: #218838;
+}
+
+/* Responsive adjustments for BibTeX section */
+@media (max-width: 768px) {
+    .bibtex-container {
+        padding: 1rem;
+    }
+    
+    .bibtex-container pre {
+        font-size: 0.9rem;
+    }
+}
+:root {
+    margin: 0 auto;
+}
+
+.bibtex-copy-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.bibtex-copy-btn:active {
+    transform: translateY(0);
+}
+
+.bibtex-copy-btn.copied {
+    background-color: #28a745;
+}
+
+.bibtex-copy-btn.copied:hover {
+    background-color: #218838;
+}
+
+/* Responsive adjustments for BibTeX section */
+@media (max-width: 768px) {
+    .bibtex-container {
+        padding: 1rem;
+    }
+    
+    .bibtex-container pre {
+        font-size: 0.9rem;
+    }
+}:root {

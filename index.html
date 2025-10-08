@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 添加 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="template/assets/main.css">
+    <link rel="stylesheet" href="template/assets/index.css">
+    <link rel="stylesheet" href="./assets/index.css">
+    <title>Controllable Video Synthesis via Variational Inference</title>
+</head>
+<body>
+<!--==================== HEADER ====================-->
+<header class="header" id="header">
+    <nav class="nav container">
+        <a href="#" class="nav__logo"><i class="nav__icon nav__home_icon"></i></a>
+        <div class="nav__menu" id="nav-menu">
+            <ul class="nav__list grid">
+                <li>
+                    <a href="#video-synthesis" class="nav__link">Video Synthesis</a>
+                </li>
+                <li>
+                    <a href="#comparisons" class="nav__link">Comparisons</a>
+                </li>
+                <li>
+                    <a href="#applications" class="nav__link">Extended Applications</a>
+                </li>
+                <li>
+                    <a href="#method" class="nav__link">Method</a>
+                </li>
+            </ul>
+            <i class="nav__close nav__icon nav__close_icon" id="nav-close"></i>
+        </div>
+
+        <div class="nav__btns">
+            <i class="nav__toggle nav__icon nav__toggle_icon" id="nav-toggle"></i>
+        </div>
+    </nav>
+</header>
+
+<!--==================== MAIN ====================-->
+<main class="main">
+    <div class="paper__content-dummy"></div>
+    <!--==================== HOME ====================-->
+    <section class="home section container">
+        <div class="paper__title">
+            Controllable Video Synthesis via Variational Inference
+        </div>
+        <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr)">
+            <div class="paper__author"><a href="https://haoyi-duan.github.io/">Haoyi Duan</a><sup>1*</sup></div>
+            <div class="paper__author"><a href="https://cs.stanford.edu/~yzzhang">Yunzhi Zhang</a><sup>1*</sup></div>
+            <div class="paper__author"><a href="https://yilundu.github.io/">Yilun Du</a><sup>2</sup></div>
+            <div class="paper__author"><a href="https://jiajunwu.com/">Jiajun Wu</a><sup>1</sup></div>
+        </div>
+        <div class="paper__section-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 1rem; margin-bottom: 0; margin-left: 20%; margin-right: 20%">
+            <div class="paper__affiliation"><sup>1</sup>Stanford University</div>
+            <div class="paper__affiliation"><sup>2</sup>Harvard University</div>
+            <div class="paper__affiliation"><sup>*</sup>Equal Contribution</div>
+        </div>
+
+        <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); margin-left: 20%; margin-right: 20%">
+            <div class="paper__attribute">
+                <a href="" class="beautiful-btn arxiv-btn">
+                    <i class="fas fa-file-pdf"></i> arXiv
+                </a>
+            </div>
+            <div class="paper__attribute">
+                <a href="" class="beautiful-btn code-btn">
+                    <i class="fas fa-code"></i> Code (Coming Soon)
+                </a>
+            </div>
+        </div>
+
+        <a class="anchor" id="abstract"></a>
+        <div class="example-container">
+            <div class="paper__section-paragraph">
+                <p>
+                    We develop a video synthesis framework to support a mixture of user controls with varying granularity, from exact 4D object trajectories and camera paths to coarse text prompts.
+                </p>
+            </div>
+        </div>
+
+        <a class="anchor" id="video-synthesis"></a>
+        <div class="paper__section-title">Video Synthesis</div>
+        <div class="example-container">
+            <div class="paper__section-paragraph">
+                <p>
+                    The framework supports population-level sampling with a variational inference framework (See <a href="#method">Method</a>). Given a set of user inputs (texts, images, camera poses, and simulation trajectories for objects in interest), running the framework yields a population of samples (4 shown below).
+                </p>
+            </div>
+        </div>
+
+        <!-- <div class="paper__section-subtitle">(i) Multi-Particle Sampling</div> -->
+        <!-- <hr class="example-divider"> -->
+        <div class="index-buttons">
+            <button class="index-btn active" data-example="dog-balloon" data-image="./data/images/dog_balloon.png">
+                <img src="./data/images/dog_balloon.png" alt="Dog Balloon">
+            </button>
+            <button class="index-btn" data-example="pigeon-watersplash" data-image="./data/images/pigeon_sphere.png">
+                <img src="./data/images/pigeon_sphere.png" alt="Pigeon Sphere">
+            </button>
+            <button class="index-btn" data-example="bee-flower" data-image="./data/images/bee_flower.png">
+                <img src="./data/images/bee_flower.png" alt="Bee Flower">
+            </button>
+            <button class="index-btn" data-example="dog-fountain" data-image="./data/images/dog_fountain.png">
+                <img src="./data/images/dog_fountain.png" alt="Dog Fountain">
+            </button>
+            <button class="index-btn" data-example="man-fire" data-image="./data/images/man_fire.png">
+                <img src="./data/images/man_fire.png" alt="Man Fire">
+            </button>
+            <button class="index-btn" data-example="dog-curtain" data-image="./data/images/dog_curtain.png">
+                <img src="./data/images/dog_curtain.png" alt="Dog Curtain">
+            </button>
+        </div>
+
+        <div class="example-container">
+            <!-- Example Content Container -->
+            <div id="example-content">
+                <!-- Dog Balloon Example -->
+                <div class="example-content active" id="dog-balloon">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A playful brown-and-white dog crouches excitedly on a patterned rug in a cozy living room, watching a shiny red balloon bounce gently up and down on the carpet. Camera moves right."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/dog_balloon.png" style="border-radius: 4px;">
+                                <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/cameras/move_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/dog_balloon.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr)">
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/0.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/7.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/3.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/6.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 1</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 2</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 3</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 4</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pigeon Watersplash Example -->
+                <div class="example-content" id="pigeon-watersplash">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A majestic seagull strides through a shallow puddle as other gulls mill about in the blurred background. A delicate transparent glass sphere falls from above, striking the water and creating a crisp splash of droplets. Camera moves left."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/pigeon_sphere.png" style="border-radius: 4px;">
+                                <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/cameras/move_left.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/pigeon_watersplash.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr)">
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/pigeon_watersplash/0.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/pigeon_watersplash/1.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/pigeon_watersplash/2.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/pigeon_watersplash/3.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 1</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 2</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 3</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 4</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bee Flower Example -->
+                <div class="example-content" id="bee-flower">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A close-up of a vibrant red flower slowly blooming, its petals unfolding gracefully in the sunlight. A honeybee hovers delicately, buzzing around the petals. Camera moves right."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/bee_flower.png" style="border-radius: 4px;">
+                                <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/cameras/move_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/bee_flower.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+        
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr)">
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/bee_flower/0.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/bee_flower/1.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/bee_flower/2.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/bee_flower/3.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 1</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 2</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 3</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 4</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dog Fountain Example -->
+                <div class="example-content" id="dog-fountain">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A playful puppy energetically jumps up and down beside a stone fountain. Crystal-clear streams of water arc gracefully from the fountain into the basin below, sparkling in the bright daylight. Camera orbits right."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/dog_fountain.png" style="border-radius: 4px;">
+                                <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/cameras/orbit_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/dog_fountain.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+        
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr)">
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/dog_fountain/0.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/dog_fountain/1.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/dog_fountain/2.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/dog_fountain/3.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 1</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 2</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 3</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 4</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Man Fire Example -->
+                <div class="example-content" id="man-fire">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A man sits calmly in front of a softly crackling campfire beside his camper van, bathed in the warm evening glow. Suddenly, the flames roar to life—flaring high with a burst of sparks and smoke. The man's eyes widen in shock as he starts to be panicked. Camera moves left."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/man_fire.png" style="border-radius: 4px;">
+                                <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/cameras/move_left.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/man_fire.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr)">
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/man_fire/0.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/man_fire/1.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/man_fire/2.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/man_fire/3.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 1</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 2</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 3</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 4</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dog Curtain Example -->
+                <div class="example-content" id="dog-curtain">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A playful dog romps around on a cozy couch in a softly lit living room. The light dims-curtains slowly glide closed. Camera is fixed."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/dog_curtain.png" style="border-radius: 4px;">
+                                <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/cameras/fixed.png" style="border-radius: 4px;">
+                                <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/dog_curtain.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr)">
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/dog_curtain/0.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/dog_curtain/1.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/dog_curtain/2.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/videos/particles/dog_curtain/3.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 1</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 2</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 3</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Particle 4</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <hr class="example-divider"> -->
+        <br>
+        
+
+        <!-- <div class="paper__section-subtitle">(ii) Different Physics-Simulator Instructions</div> -->
+        <!-- <hr class="example-divider"> -->
+        <div class="example-container">
+            <div class="paper__section-paragraph">
+                <p>
+                    Supporting object simulation trajectories as input controls allows for precise control over the output content. Toggle buttons below to view outputs with different simulation trajectory inputs.
+                </p>
+            </div>
+        </div>
+        <div class="index-buttons">
+            <button class="index-btn physics-btn active" data-example="physics-dog-fountain" data-image="./data/images/dog_fountain.png">
+                <img src="./data/images/dog_fountain.png" alt="Dog Fountain">
+            </button>
+            <button class="index-btn physics-btn" data-example="physics-dog-curtain" data-image="./data/images/dog_curtain.png">
+                <img src="./data/images/dog_curtain.png" alt="Dog Curtain">
+            </button>
+            <button class="index-btn physics-btn" data-example="physics-woman-pooltable" data-image="./data/images/woman_pooltable.png">
+                <img src="./data/images/woman_pooltable.png" alt="Woman Pooltable">
+            </button>
+            <button class="index-btn physics-btn" data-example="physics-dog-balloon" data-image="./data/images/dog_balloon.png">
+                <img src="./data/images/dog_balloon.png" alt="Dog Balloon">
+            </button>
+        </div>
+
+        <div class="example-container">
+            <!-- Dog Fountain Example -->
+            <div id="physics-dog-fountain" class="example-content active">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: 0.5fr repeat(3, 1fr) 0.5fr ">
+                    <div></div>
+                    <div>
+                        <p class="caption">"A playful puppy energetically jumps up and down beside a stone fountain. Crystal-clear streams of water arc gracefully from the fountain into the basin below, sparkling in the bright daylight. Camera orbits right."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/dog_fountain.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/orbit_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div></div>
+
+                    <div></div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div></div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="simple-video-btn active" 
+                                data-video-src="./data/merged/dog_fountain_large.mp4" 
+                                data-target-video="simple-video-dog-fountain"
+                                data-group="dog-fountain-simple">
+                                Large fountain splash
+                        </button>
+                        <button class="simple-video-btn" 
+                                data-video-src="./data/merged/dog_fountain_medium.mp4" 
+                                data-target-video="simple-video-dog-fountain"
+                                data-group="dog-fountain-simple">
+                                Medium fountain splash
+                        </button>
+                        <button class="simple-video-btn" 
+                                data-video-src="./data/merged/dog_fountain_small.mp4" 
+                                data-target-video="simple-video-dog-fountain"
+                                data-group="dog-fountain-simple">
+                                Small fountain splash
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-dog-fountain" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(1, 1fr); gap: 20px;">
+                        <div>
+                            <video id="simple-video-dog-fountain" 
+                                playsinline controls loop muted autoplay 
+                                src="./data/merged/dog_fountain_large.mp4#t=0.001" 
+                                style="width: 100%;">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dog Curtain Example -->
+            <div id="physics-dog-curtain" class="example-content">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: 0.5fr repeat(3, 1fr) 0.5fr ">
+                    <div></div>
+                    <div>
+                        <p class="caption">"A playful dog romps around on a cozy couch in a softly lit living room. The light dims-curtains slowly glide closed. Camera is fixed."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/dog_curtain.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/cameras/fixed.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div></div>
+
+                    <div></div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div></div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="simple-video-btn active" 
+                                data-video-src="./data/merged/dog_curtain_slow.mp4" 
+                                data-target-video="simple-video-dog-curtain"
+                                data-group="dog-curtain-simple">
+                            Curtain closes slowly
+                        </button>
+                        <button class="simple-video-btn" 
+                                data-video-src="./data/merged/dog_curtain_fast.mp4" 
+                                data-target-video="simple-video-dog-curtain"
+                                data-group="dog-curtain-simple">
+                            Curtain closes quickly
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-dog-curtain" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(1, 1fr); gap: 20px;">
+                        <div>
+                            <video id="simple-video-dog-curtain" 
+                                playsinline controls loop muted autoplay 
+                                src="./data/merged/dog_curtain_slow.mp4#t=0.001" 
+                                style="width: 100%;">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Woman Pooltable Example -->
+            <div id="physics-woman-pooltable" class="example-content">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: 0.5fr repeat(3, 1fr) 0.5fr ">
+                    <div></div>
+                    <div>
+                        <p class="caption">"In a dimly lit billiards hall, a focused woman leans in with precision, her eyes locked on the cue ball. She is using the pool cue to hit the white ball and the white ball is then bouncing the black ball. Camera moves right."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/woman_pooltable.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/move_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div></div>
+
+                    <div></div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div></div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="simple-video-btn active" 
+                                data-video-src="./data/merged/woman_pooltable_fast.mp4" 
+                                data-target-video="simple-video-woman-pooltable"
+                                data-group="woman-pooltable-simple">
+                            Hard hit
+                        </button>
+                        <button class="simple-video-btn" 
+                                data-video-src="./data/merged/woman_pooltable_medium.mp4" 
+                                data-target-video="simple-video-woman-pooltable"
+                                data-group="woman-pooltable-simple">
+                            Normal shot
+                        </button>
+                        <button class="simple-video-btn" 
+                                data-video-src="./data/merged/woman_pooltable_slow.mp4" 
+                                data-target-video="simple-video-woman-pooltable"
+                                data-group="woman-pooltable-simple">
+                            Gentle shot
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-woman-pooltable" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(1, 1fr); gap: 20px;">
+                        <div>
+                            <video id="simple-video-woman-pooltable" 
+                                playsinline controls loop muted autoplay 
+                                src="./data/merged/woman_pooltable_fast.mp4#t=0.001" 
+                                style="width: 100%;">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dog Balloon Example -->
+            <div id="physics-dog-balloon" class="example-content">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: 0.5fr repeat(3, 1fr) 0.5fr ">
+                    <div></div>
+                    <div>
+                        <p class="caption">"A playful brown-and-white dog crouches excitedly on a patterned rug in a cozy living room, watching a shiny red balloon bounce gently up and down on the carpet. Camera moves right."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/dog_balloon.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/move_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div></div>
+
+                    <div></div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div></div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="simple-video-btn active" 
+                                data-video-src="./data/merged/dog_balloon_fast.mp4" 
+                                data-target-video="simple-video-dog-balloon"
+                                data-group="dog-balloon-simple">
+                            Balloon bounces quickly
+                        </button>
+                        <button class="simple-video-btn" 
+                                data-video-src="./data/merged/dog_balloon_slow.mp4" 
+                                data-target-video="simple-video-dog-balloon"
+                                data-group="dog-balloon-simple">
+                            Balloon bounces slowly
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-dog-balloon" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(1, 1fr); gap: 20px;">
+                        <div>
+                            <video id="simple-video-dog-balloon" 
+                                playsinline controls loop muted autoplay 
+                                src="./data/merged/dog_balloon_fast.mp4#t=0.001" 
+                                style="width: 100%;">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                        
+        <a class="anchor" id="comparisons"></a>
+        <div class="paper__section-title">Comparisons</div>
+        <!-- <div class="paper__section-subtitle">(iii) Comparisons with Baselines</div> -->
+        <!-- <hr class="example-divider"> -->
+        <div class="example-container">
+            <div class="paper__section-paragraph">
+                <p>
+                    Below are comparisons with baselines including monolithic models (video generation models and novel view synthesis models), and compositional methods. 
+                    Monolithic models typically don't account for all user inputs, while existing compositional methods tend to produce scene inconsistency. 
+                </p>
+            </div>
+        </div>
+        <div class="index-buttons">
+            <button class="index-btn baseline-btn active" data-example="baseline-hand-sphere" data-image="./data/images/hand_sphere.png">
+                <img src="./data/images/hand_sphere.png" alt="Hand Sphere">
+            </button>
+            <button class="index-btn baseline-btn" data-example="baseline-woman-pooltable" data-image="./data/images/woman_pooltable.png">
+                <img src="./data/images/woman_pooltable.png" alt="Woman Pooltable">
+            </button>
+            <button class="index-btn baseline-btn" data-example="baseline-dog-curtain" data-image="./data/images/dog_curtain.png">
+                <img src="./data/images/dog_curtain.png" alt="Dog Curtain">
+            </button>
+            <button class="index-btn baseline-btn" data-example="baseline-dog-balloon" data-image="./data/images/dog_balloon.png">
+                <img src="./data/images/dog_balloon.png" alt="Dog Balloon">
+            </button>
+            <button class="index-btn baseline-btn" data-example="baseline-dog-fountain" data-image="./data/images/dog_fountain.png">
+                <img src="./data/images/dog_fountain.png" alt="Dog Fountain">
+            </button>
+            <button class="index-btn baseline-btn" data-example="baseline-dog-tennis" data-image="./data/images/dog_tennis.png">
+                <img src="./data/images/dog_tennis.png" alt="Dog Tennis">
+            </button>
+            <button class="index-btn baseline-btn" data-example="baseline-cat-tennis" data-image="./data/images/cat_tennis.png">
+                <img src="./data/images/cat_tennis.png" alt="Cat Tennis">
+            </button>
+        </div>
+
+            <!-- Hand Sphere Example -->
+            <div id="baseline-hand-sphere" class="example-content active">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                    <div>
+                        <p class="caption">"A close-up shot of a delicate white porcelain cup filled with creamy latte art, cradled gently in both hands. A perfectly clear, photorealistic ice sphere drops from above, striking the surface with a crisp splash. Camera spirals."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/hand_sphere.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/spiral.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/simulations/coffee_splash.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Simulation</p>
+                    </div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="comparison-btn active" data-baseline="image" data-video="./data/baselines/hand_sphere/image.mp4" data-label="Image-to-Video" data-section="hand-sphere">Ours vs. Image-to-Video</button>
+                        <button class="comparison-btn" data-baseline="depth" data-video="./data/baselines/hand_sphere/depth.mp4" data-label="Depth-to-Video" data-section="hand-sphere">Ours vs. Depth-to-Video</button>
+                        <button class="comparison-btn" data-baseline="flow" data-video="./data/baselines/hand_sphere/flow.mp4" data-label="Flow-to-Video" data-section="hand-sphere">Ours vs. Flow-to-Video</button>
+                        <button class="comparison-btn" data-baseline="camera" data-video="./data/baselines/hand_sphere/camera.mp4" data-label="Camera-to-Video" data-section="hand-sphere">Ours vs. Camera-to-Video</button>
+                        <button class="comparison-btn" data-baseline="gen3c" data-video="./data/baselines/hand_sphere/gen3c.mp4" data-label="Gen3C" data-section="hand-sphere">Ours vs. Gen3C</button>
+                        <button class="comparison-btn" data-baseline="poe" data-video="./data/baselines/hand_sphere/poe.mp4" data-label="Composed (Image&Depth)" data-section="hand-sphere">Ours vs. Composed (Image&Depth)</button>
+                        <button class="comparison-btn" data-baseline="poe_camera" data-video="./data/baselines/hand_sphere/poe_camera.mp4" data-label="Composed (Camera&Depth)" data-section="hand-sphere">Ours vs. Composed (Camera&Depth)</button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-hand-sphere" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <video id="ours-video-hand-sphere" playsinline controls loop muted autoplay src="./data/videos/coffee_splash.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                            <p class="subcaption" style="text-align: center; margin-top: 8px;">Ours</p>
+                        </div>
+                        <div>
+                            <video id="baseline-video-hand-sphere" playsinline controls loop muted autoplay src="./data/baselines/hand_sphere/image.mp4#t=0.001" style="width: 100%;"></video>
+                            <p id="baseline-label-hand-sphere" class="subcaption" style="text-align: center; margin-top: 8px;">Image-to-Video</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Woman Pooltable Example -->
+            <div id="baseline-woman-pooltable" class="example-content">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                    <div>
+                        <p class="caption">"In a dimly lit billiards hall, a focused woman leans in with precision, her eyes locked on the cue ball. She is using the pool cue to hit the white ball and the white ball is then bouncing the black ball. Camera moves right."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/woman_pooltable.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/move_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/simulations/woman_pooltable.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Simulation</p>
+                    </div>
+                </div>
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="comparison-btn active" data-baseline="image" data-video="./data/baselines/woman_pooltable/image.mp4" data-label="Image-to-Video" data-section="woman-pooltable">Ours vs. Image-to-Video</button>
+                        <button class="comparison-btn" data-baseline="depth" data-video="./data/baselines/woman_pooltable/depth.mp4" data-label="Depth-to-Video" data-section="woman-pooltable">Ours vs. Depth-to-Video</button>
+                        <button class="comparison-btn" data-baseline="flow" data-video="./data/baselines/woman_pooltable/flow.mp4" data-label="Flow-to-Video" data-section="woman-pooltable">Ours vs. Flow-to-Video</button>
+                        <button class="comparison-btn" data-baseline="camera" data-video="./data/baselines/woman_pooltable/camera.mp4" data-label="Camera-to-Video" data-section="woman-pooltable">Ours vs. Camera-to-Video</button>
+                        <button class="comparison-btn" data-baseline="gen3c" data-video="./data/baselines/woman_pooltable/gen3c.mp4" data-label="Gen3C" data-section="woman-pooltable">Ours vs. Gen3C</button>
+                        <button class="comparison-btn" data-baseline="poe" data-video="./data/baselines/woman_pooltable/poe.mp4" data-label="Composed (Image&Depth)" data-section="woman-pooltable">Ours vs. Composed (Image&Depth)</button>
+                        <button class="comparison-btn" data-baseline="poe_camera" data-video="./data/baselines/woman_pooltable/poe_camera.mp4" data-label="Composed (Camera&Depth)" data-section="woman-pooltable">Ours vs. Composed (Camera&Depth)</button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-woman-pooltable" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <video id="ours-video-woman-pooltable" playsinline controls loop muted autoplay src="./data/videos/woman_pooltable.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                            <p class="subcaption" style="text-align: center; margin-top: 8px;">Ours</p>
+                        </div>
+                        <div>
+                            <video id="baseline-video-woman-pooltable" playsinline controls loop muted autoplay src="./data/baselines/woman_pooltable/image.mp4#t=0.001" style="width: 100%;"></video>
+                            <p id="baseline-label-woman-pooltable" class="subcaption" style="text-align: center; margin-top: 8px;">Image-to-Video</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue with other examples... -->
+
+            <!-- Dog Curtain Example -->
+            <div id="baseline-dog-curtain" class="example-content">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                    <div>
+                        <p class="caption">"A playful dog romps around on a cozy couch in a softly lit living room. The light dims-curtains slowly glide closed. Camera moves right."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/dog_curtain.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/move_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/simulations/dog_curtain_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Simulation</p>
+                    </div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="comparison-btn active" data-baseline="image" data-video="./data/baselines/dog_curtain/image.mp4" data-label="Image-to-Video" data-section="dog-curtain">Ours vs. Image-to-Video</button>
+                        <button class="comparison-btn" data-baseline="depth" data-video="./data/baselines/dog_curtain/depth.mp4" data-label="Depth-to-Video" data-section="dog-curtain">Ours vs. Depth-to-Video</button>
+                        <button class="comparison-btn" data-baseline="flow" data-video="./data/baselines/dog_curtain/flow.mp4" data-label="Flow-to-Video" data-section="dog-curtain">Ours vs. Flow-to-Video</button>
+                        <button class="comparison-btn" data-baseline="camera" data-video="./data/baselines/dog_curtain/camera.mp4" data-label="Camera-to-Video" data-section="dog-curtain">Ours vs. Camera-to-Video</button>
+                        <button class="comparison-btn" data-baseline="gen3c" data-video="./data/baselines/dog_curtain/gen3c.mp4" data-label="Gen3C" data-section="dog-curtain">Ours vs. Gen3C</button>
+                        <button class="comparison-btn" data-baseline="poe" data-video="./data/baselines/dog_curtain/poe.mp4" data-label="Composed (Image&Depth)" data-section="dog-curtain">Ours vs. Composed (Image&Depth)</button>
+                        <button class="comparison-btn" data-baseline="poe_camera" data-video="./data/baselines/dog_curtain/poe_camera.mp4" data-label="Composed (Camera&Depth)" data-section="dog-curtain">Ours vs. Composed (Camera&Depth)</button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-dog-curtain" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <video id="ours-video-dog-curtain" playsinline controls loop muted autoplay src="./data/videos/dog_curtain_right.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                            <p class="subcaption" style="text-align: center; margin-top: 8px;">Ours</p>
+                        </div>
+                        <div>
+                            <video id="baseline-video-dog-curtain" playsinline controls loop muted autoplay src="./data/baselines/dog_curtain/image.mp4#t=0.001" style="width: 100%;"></video>
+                            <p id="baseline-label-dog-curtain" class="subcaption" style="text-align: center; margin-top: 8px;">Image-to-Video</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Dog Balloon Example -->
+            <div id="baseline-dog-balloon" class="example-content">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                    <div>
+                        <p class="caption">"A playful brown-and-white dog crouches excitedly on a patterned rug in a cozy living room, watching a shiny red balloon bounce gently up and down on the carpet. Camera moves right."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/dog_balloon.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/move_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/simulations/dog_balloon.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Simulation</p>
+                    </div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="comparison-btn active" data-baseline="image" data-video="./data/baselines/dog_balloon/image.mp4" data-label="Image-to-Video" data-section="dog-balloon">Ours vs. Image-to-Video</button>
+                        <button class="comparison-btn" data-baseline="depth" data-video="./data/baselines/dog_balloon/depth.mp4" data-label="Depth-to-Video" data-section="dog-balloon">Ours vs. Depth-to-Video</button>
+                        <button class="comparison-btn" data-baseline="flow" data-video="./data/baselines/dog_balloon/flow.mp4" data-label="Flow-to-Video" data-section="dog-balloon">Ours vs. Flow-to-Video</button>
+                        <button class="comparison-btn" data-baseline="camera" data-video="./data/baselines/dog_balloon/camera.mp4" data-label="Camera-to-Video" data-section="dog-balloon">Ours vs. Camera-to-Video</button>
+                        <button class="comparison-btn" data-baseline="gen3c" data-video="./data/baselines/dog_balloon/gen3c.mp4" data-label="Gen3C" data-section="dog-balloon">Ours vs. Gen3C</button>
+                        <button class="comparison-btn" data-baseline="poe" data-video="./data/baselines/dog_balloon/poe.mp4" data-label="Composed (Image&Depth)" data-section="dog-balloon">Ours vs. Composed (Image&Depth)</button>
+                        <button class="comparison-btn" data-baseline="poe_camera" data-video="./data/baselines/dog_balloon/poe_camera.mp4" data-label="Composed (Camera&Depth)" data-section="dog-balloon">Ours vs. Composed (Camera&Depth)</button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-dog-balloon" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <video id="ours-video-dog-balloon" playsinline controls loop muted autoplay src="./data/videos/dog_balloon.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                            <p class="subcaption" style="text-align: center; margin-top: 8px;">Ours</p>
+                        </div>
+                        <div>
+                            <video id="baseline-video-dog-balloon" playsinline controls loop muted autoplay src="./data/baselines/dog_balloon/image.mp4#t=0.001" style="width: 100%;"></video>
+                            <p id="baseline-label-dog-balloon" class="subcaption" style="text-align: center; margin-top: 8px;">Image-to-Video</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Dog Fountain Example -->
+            <div id="baseline-dog-fountain" class="example-content">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                    <div>
+                        <p class="caption">"A playful puppy energetically jumps up and down beside a stone fountain. Crystal-clear streams of water arc gracefully from the fountain into the basin below, sparkling in the bright daylight. Camera orbits right."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/dog_fountain.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/orbit_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/simulations/dog_fountain.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Simulation</p>
+                    </div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="comparison-btn active" data-baseline="image" data-video="./data/baselines/dog_fountain/image.mp4" data-label="Image-to-Video" data-section="dog-fountain">Ours vs. Image-to-Video</button>
+                        <button class="comparison-btn" data-baseline="depth" data-video="./data/baselines/dog_fountain/depth.mp4" data-label="Depth-to-Video" data-section="dog-fountain">Ours vs. Depth-to-Video</button>
+                        <button class="comparison-btn" data-baseline="flow" data-video="./data/baselines/dog_fountain/flow.mp4" data-label="Flow-to-Video" data-section="dog-fountain">Ours vs. Flow-to-Video</button>
+                        <button class="comparison-btn" data-baseline="camera" data-video="./data/baselines/dog_fountain/camera.mp4" data-label="Camera-to-Video" data-section="dog-fountain">Ours vs. Camera-to-Video</button>
+                        <button class="comparison-btn" data-baseline="gen3c" data-video="./data/baselines/dog_fountain/gen3c.mp4" data-label="Gen3C" data-section="dog-fountain">Ours vs. Gen3C</button>
+                        <button class="comparison-btn" data-baseline="poe" data-video="./data/baselines/dog_fountain/poe.mp4" data-label="Composed (Image&Depth)" data-section="dog-fountain">Ours vs. Composed (Image&Depth)</button>
+                        <button class="comparison-btn" data-baseline="poe_camera" data-video="./data/baselines/dog_fountain/poe_camera.mp4" data-label="Composed (Camera&Depth)" data-section="dog-fountain">Ours vs. Composed (Camera&Depth)</button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-dog-fountain" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <video id="ours-video-dog-fountain" playsinline controls loop muted autoplay src="./data/videos/dog_fountain.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                            <p class="subcaption" style="text-align: center; margin-top: 8px;">Ours</p>
+                        </div>
+                        <div>
+                            <video id="baseline-video-dog-fountain" playsinline controls loop muted autoplay src="./data/baselines/dog_fountain/image.mp4#t=0.001" style="width: 100%;"></video>
+                            <p id="baseline-label-dog-fountain" class="subcaption" style="text-align: center; margin-top: 8px;">Image-to-Video</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Dog Tennis Example -->
+            <div id="baseline-dog-tennis" class="example-content">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                    <div>
+                        <p class="caption">"An energetic golden retriever bounds across a lush green tennis court, chasing after a bright yellow tennis ball with focused determination. The ball bounces high as the dog leaps to catch it. Camera moves right."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/dog_tennis.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/move_right.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/simulations/dog_tennis.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Simulation</p>
+                    </div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="comparison-btn active" data-baseline="image" data-video="./data/baselines/dog_tennis/image.mp4" data-label="Image-to-Video" data-section="dog-tennis">Ours vs. Image-to-Video</button>
+                        <button class="comparison-btn" data-baseline="depth" data-video="./data/baselines/dog_tennis/depth.mp4" data-label="Depth-to-Video" data-section="dog-tennis">Ours vs. Depth-to-Video</button>
+                        <button class="comparison-btn" data-baseline="flow" data-video="./data/baselines/dog_tennis/flow.mp4" data-label="Flow-to-Video" data-section="dog-tennis">Ours vs. Flow-to-Video</button>
+                        <button class="comparison-btn" data-baseline="camera" data-video="./data/baselines/dog_tennis/camera.mp4" data-label="Camera-to-Video" data-section="dog-tennis">Ours vs. Camera-to-Video</button>
+                        <button class="comparison-btn" data-baseline="gen3c" data-video="./data/baselines/dog_tennis/gen3c.mp4" data-label="Gen3C" data-section="dog-tennis">Ours vs. Gen3C</button>
+                        <button class="comparison-btn" data-baseline="poe" data-video="./data/baselines/dog_tennis/poe.mp4" data-label="Composed (Image&Depth)" data-section="dog-tennis">Ours vs. Composed (Image&Depth)</button>
+                        <button class="comparison-btn" data-baseline="poe_camera" data-video="./data/baselines/dog_tennis/poe_camera.mp4" data-label="Composed (Camera&Depth)" data-section="dog-tennis">Ours vs. Composed (Camera&Depth)</button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-dog-tennis" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <video id="ours-video-dog-tennis" playsinline controls loop muted autoplay src="./data/videos/dog_tennis.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                            <p class="subcaption" style="text-align: center; margin-top: 8px;">Ours</p>
+                        </div>
+                        <div>
+                            <video id="baseline-video-dog-tennis" playsinline controls loop muted autoplay src="./data/baselines/dog_tennis/image.mp4#t=0.001" style="width: 100%;"></video>
+                            <p id="baseline-label-dog-tennis" class="subcaption" style="text-align: center; margin-top: 8px;">Image-to-Video</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Cat Tennis Example -->
+            <div id="baseline-cat-tennis" class="example-content">
+                <br>
+                <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                    <div>
+                        <p class="caption">"A sleek black cat crouches low on a wooden floor, eyes locked on a small red ball rolling towards it. The cat pounces with lightning speed, batting the ball with its paw. Camera moves left."</p>
+                    </div>
+                    <div>
+                        <video playsinline muted poster="./data/images/cat_tennis.png" style="border-radius: 4px;">
+                            <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                        </video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/cameras/move_left.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+                    <div>
+                        <video playsinline controls loop muted src="./data/simulations/cat_tennis.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                    </div>
+
+                    <div>
+                        <p class="subcaption">Input Text</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Image</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Camera Poses</p>
+                    </div>
+                    <div>
+                        <p class="subcaption">Input Simulation</p>
+                    </div>
+                </div>
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="comparison-btn active" data-baseline="image" data-video="./data/baselines/cat_tennis/image.mp4" data-label="Image-to-Video" data-section="cat-tennis">Ours vs. Image-to-Video</button>
+                        <button class="comparison-btn" data-baseline="depth" data-video="./data/baselines/cat_tennis/depth.mp4" data-label="Depth-to-Video" data-section="cat-tennis">Ours vs. Depth-to-Video</button>
+                        <button class="comparison-btn" data-baseline="flow" data-video="./data/baselines/cat_tennis/flow.mp4" data-label="Flow-to-Video" data-section="cat-tennis">Ours vs. Flow-to-Video</button>
+                        <button class="comparison-btn" data-baseline="camera" data-video="./data/baselines/cat_tennis/camera.mp4" data-label="Camera-to-Video" data-section="cat-tennis">Ours vs. Camera-to-Video</button>
+                        <button class="comparison-btn" data-baseline="gen3c" data-video="./data/baselines/cat_tennis/gen3c.mp4" data-label="Gen3C" data-section="cat-tennis">Ours vs. Gen3C</button>
+                        <button class="comparison-btn" data-baseline="poe" data-video="./data/baselines/cat_tennis/poe.mp4" data-label="Composed (Image&Depth)" data-section="cat-tennis">Ours vs. Composed (Image&Depth)</button>
+                        <button class="comparison-btn" data-baseline="poe_camera" data-video="./data/baselines/cat_tennis/poe_camera.mp4" data-label="Composed (Camera&Depth)" data-section="cat-tennis">Ours vs. Composed (Camera&Depth)</button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-cat-tennis" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <video id="ours-video-cat-tennis" playsinline controls loop muted autoplay src="./data/videos/cat_tennis.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                            <p class="subcaption" style="text-align: center; margin-top: 8px;">Ours</p>
+                        </div>
+                        <div>
+                            <video id="baseline-video-cat-tennis" playsinline controls loop muted autoplay src="./data/baselines/cat_tennis/image.mp4#t=0.001" style="width: 100%;"></video>
+                            <p id="baseline-label-cat-tennis" class="subcaption" style="text-align: center; margin-top: 8px;">Image-to-Video</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a class="anchor" id="applications"></a>
+        <div class="paper__section-title">Extended Applications</div>
+        <div class="example-container">
+            <div class="paper__section-paragraph">
+                <p>
+                    The same technique can be extended to other applications, such as generating videos longer than the standard output lengths from existing diffusion/flow-based video models.
+                </p>
+            </div>
+        </div>
+
+        <!-- <hr class="example-divider"> -->
+        <div class="index-buttons">
+            <button class="index-btn long-video-btn active" data-example="long-dog-curtain" data-image="./data/images/dog_curtain.png">
+                <img src="./data/images/dog_curtain.png" alt="Dog Curtain Long">
+            </button>
+            <button class="index-btn long-video-btn" data-example="long-bee-flower" data-image="./data/images/bee_flower.png">
+                <img src="./data/images/bee_flower.png" alt="Bee Flower Long">
+            </button>
+            <button class="index-btn long-video-btn" data-example="long-dog-fountain" data-image="./data/images/dog_fountain.png">
+                <img src="./data/images/dog_fountain.png" alt="Dog Fountain Long">
+            </button>
+            <button class="index-btn long-video-btn" data-example="long-dog-balloon" data-image="./data/images/dog_balloon.png">
+                <img src="./data/images/dog_balloon.png" alt="Dog Balloon Long">
+            </button>
+        </div>
+
+        <div class="example-container">
+            
+            <!-- Long Video Example Content Container -->
+            <div id="long-video-content">
+                <!-- Dog Curtain Long Example -->
+                <div class="example-content active" id="long-dog-curtain">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A playful dog romps around on a cozy couch in a softly lit living room. The light dims-curtains slowly glide closed and reopen. Camera is fixed."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/dog_curtain.png" style="border-radius: 4px;">
+                                <source src="./data/images/dog_curtain.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/cameras/fixed.png" style="border-radius: 4px;">
+                                <source src="resource/comparison/tennis_and_bird/raw.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/dog_curtain_long.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: 0.5fr repeat(1, 1fr) 0.5fr">
+                        <div>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/long/dog_curtain.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>     
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px;">
+                        <p class="subcaption">Generated Long Video</p>
+                    </div>
+                </div>
+
+                <!-- Bee Flower Long Example -->
+                <div class="example-content" id="long-bee-flower">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A close-up of a vibrant red flower slowly blooming, its petals unfolding gracefully in the sunlight. A honeybee hovers delicately, buzzing around the petals. Camera is fixed and then spirals."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/bee_flower.png" style="border-radius: 4px;">
+                                <source src="./data/images/bee_flower.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/cameras/spiral_long.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/bee_flower_long.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: 0.5fr repeat(1, 1fr) 0.5fr">
+                        <div>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/long/bee_flower.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>     
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px;">
+                        <p class="subcaption">Generated Long Video</p>
+                    </div>
+                </div>
+
+                <!-- Dog Fountain Long Example -->
+                <div class="example-content" id="long-dog-fountain">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A playful puppy energetically jumps up and down beside a stone fountain. Crystal-clear streams of water arc gracefully from the fountain into the basin below, sparkling in the bright daylight. Camera orbits right and then orbits left."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/dog_fountain.png" style="border-radius: 4px;">
+                                <source src="./data/images/dog_fountain.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/cameras/orbit_long.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/dog_fountain_long.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: 0.5fr repeat(1, 1fr) 0.5fr">
+                        <div>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/long/dog_fountain.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>     
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px;">
+                        <p class="subcaption">Generated Long Video</p>
+                    </div>
+                </div>
+
+                <!-- Dog Balloon Long Example -->
+                <div class="example-content" id="long-dog-balloon">
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(4, 1fr) ">
+                        <div>
+                            <p class="caption">"A playful brown-and-white dog crouches excitedly on a patterned rug in a cozy living room, watching a shiny red balloon bounce gently up and down on the carpet. Camera moves right and then left."</p>
+                        </div>
+                        <div>
+                            <video playsinline muted poster="./data/images/dog_balloon.png" style="border-radius: 4px;">
+                                <source src="./data/images/dog_balloon.png" type="image/png">
+                            </video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/cameras/right_long.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/simulations/dog_balloon_long.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                        </div>
+
+                        <div>
+                            <p class="subcaption">Input Text</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Image</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Camera Poses</p>
+                        </div>
+                        <div>
+                            <p class="subcaption">Input Simulation</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="paper__section-grid" style="grid-template-columns: 0.5fr repeat(1, 1fr) 0.5fr">
+                        <div>
+                        </div>
+                        <div>
+                            <video playsinline controls loop muted src="./data/long/dog_balloon.mp4#t=0.001" type="video/mp4"></video>
+                        </div>
+                        <div>     
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px;">
+                        <p class="subcaption">Generated Long Video</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- <a class="anchor" id="video-editing"></a> -->
+        <!-- <div class="paper__section-title">Video Editing</div> -->
+        <div class="example-container">
+            <div class="paper__section-paragraph">
+                <p>
+                    <!-- TODO: Placeholder. Object insertion. Video source: Vid2Sim, DrivingDojo Dataset. -->
+                    Another application is to insert objects into videos as shown below.
+                </p>
+            </div>
+        </div>
+
+        <!-- <hr class="example-divider"> -->
+        <div class="index-buttons">
+            <button class="index-btn edit-video-btn active" data-example="edit-0000" data-image="./data/editing/images/0000.png">
+                <img src="./data/editing/images/0000.png" alt="0000 Editing">
+            </button>
+            <button class="index-btn edit-video-btn" data-example="edit-0001" data-image="./data/editing/images/0001.png">
+                <img src="./data/editing/images/0001.png" alt="0001 Editing">
+            </button>
+            <button class="index-btn edit-video-btn" data-example="edit-0002" data-image="./data/editing/images/0002.png">
+                <img src="./data/editing/images/0002.png" alt="0002 Editing">
+            </button>
+            <button class="index-btn edit-video-btn" data-example="edit-0003" data-image="./data/editing/images/0003.png">
+                <img src="./data/editing/images/0003.png" alt="0003 Editing">
+            </button>
+        </div>
+
+        <div class="example-container">
+            
+            <!-- Video Editing Example Content Container -->
+            <div id="edit-video-content">
+                <div class="example-content active" id="edit-0000">
+                
+                <!-- Comparison buttons -->
+                <div style="margin: 20px 0; text-align: center;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <button class="editing-btn active" data-video-src="./data/editing/videos/00.mp4" data-target-video="editing-video-0000" data-group="editing-0000">Original</button>
+                        <button class="editing-btn" data-video-src="./data/editing/videos/01.mp4" data-target-video="editing-video-0000" data-group="editing-0000">Car drifting</button>
+                        <button class="editing-btn" data-video-src="./data/editing/videos/02.mp4" data-target-video="editing-video-0000" data-group="editing-0000">Change appearance</button>
+                    </div>
+                </div>
+                
+                <!-- Comparison display area -->
+                <div id="comparison-display-0000" style="display: block; margin: 20px 0;">
+                    <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <video playsinline controls loop muted autoplay src="./data/editing/videos/0_bg.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                            <p class="subcaption" style="text-align: center; margin-top: 8px;">Input Video</p>
+                        </div>
+                        <div>
+                            <video id="editing-video-0000" playsinline controls loop muted autoplay src="./data/editing/videos/00.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                            <p class="subcaption" style="text-align: center; margin-top: 8px;">Edited Video</p>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="example-content" id="edit-0001">
+                
+                    <!-- Comparison buttons -->
+                    <div style="margin: 20px 0; text-align: center;">
+                        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                            <button class="editing-btn active" data-video-src="./data/editing/videos/10.mp4" data-target-video="editing-video-0001" data-group="editing-0001">Humanoid Robot</button>
+                            <button class="editing-btn" data-video-src="./data/editing/videos/11.mp4" data-target-video="editing-video-0001" data-group="editing-0001">Robot Dog</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Comparison display area -->
+                    <div id="comparison-display-0001" style="display: block; margin: 20px 0;">
+                        <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                            <div>
+                                <video playsinline controls loop muted autoplay src="./data/editing/videos/1_bg.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                                <p class="subcaption" style="text-align: center; margin-top: 8px;">Input Video</p>
+                            </div>
+                            <div>
+                                <video id="editing-video-0001" playsinline controls loop muted autoplay src="./data/editing/videos/10.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                                <p class="subcaption" style="text-align: center; margin-top: 8px;">Edited Video</p>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="example-content" id="edit-0002">
+                
+                        <!-- Comparison buttons -->
+                        <div style="margin: 20px 0; text-align: center;">
+                            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                                <button class="editing-btn active" data-video-src="./data/editing/videos/20.mp4" data-target-video="editing-video-0002" data-group="editing-0002">Original</button>
+                                <button class="editing-btn" data-video-src="./data/editing/videos/21.mp4" data-target-video="editing-video-0002" data-group="editing-0002">Move left</button>
+                                <button class="editing-btn" data-video-src="./data/editing/videos/22.mp4" data-target-video="editing-video-0002" data-group="editing-0002">Move forward</button>
+                                <button class="editing-btn" data-video-src="./data/editing/videos/23.mp4" data-target-video="editing-video-0002" data-group="editing-0002">Change appearance</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Comparison display area -->
+                        <div id="comparison-display-0002" style="display: block; margin: 20px 0;">
+                            <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                                <div>
+                                    <video playsinline controls loop muted autoplay src="./data/editing/videos/2_bg.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                                    <p class="subcaption" style="text-align: center; margin-top: 8px;">Input Video</p>
+                                </div>
+                                <div>
+                                    <video id="editing-video-0002" playsinline controls loop muted autoplay src="./data/editing/videos/20.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                                    <p class="subcaption" style="text-align: center; margin-top: 8px;">Edited Video</p>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="example-content" id="edit-0003">
+                
+                            <!-- Comparison buttons -->
+                            <div style="margin: 20px 0; text-align: center;">
+                                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                                    <button class="editing-btn active" data-video-src="./data/editing/videos/30.mp4" data-target-video="editing-video-0003" data-group="editing-0003">Original</button>
+                                    <button class="editing-btn" data-video-src="./data/editing/videos/31.mp4" data-target-video="editing-video-0003" data-group="editing-0003">Move left</button>
+                                    <button class="editing-btn" data-video-src="./data/editing/videos/32.mp4" data-target-video="editing-video-0003" data-group="editing-0003">Move forward</button>
+                                    <button class="editing-btn" data-video-src="./data/editing/videos/33.mp4" data-target-video="editing-video-0003" data-group="editing-0003">Change appearance</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Comparison display area -->
+                            <div id="comparison-display-0003" style="display: block; margin: 20px 0;">
+                                <div class="paper__section-grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                                    <div>
+                                        <video playsinline controls loop muted autoplay src="./data/editing/videos/3_bg.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                                        <p class="subcaption" style="text-align: center; margin-top: 8px;">Input Video</p>
+                                    </div>
+                                    <div>
+                                        <video id="editing-video-0003" playsinline controls loop muted autoplay src="./data/editing/videos/30.mp4#t=0.001" type="video/mp4" style="width: 100%;"></video>
+                                        <p class="subcaption" style="text-align: center; margin-top: 8px;">Edited Video</p>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+
+            </div>
+        </div>
+
+        <a class="anchor" id="method"></a>
+        <div class="paper__section-title">Method</div>
+        <div class="example-container">
+            <div class="paper__section-paragraph">
+                <p>
+The task is cast as variational inference to approximate a composed distribution, leveraging multiple video generation backbones to account for all task constraints collectively.
+To address the optimization challenge, the problem is broken down into step-wise KL divergence minimization over an annealed sequence of distributions, and further propose a conditional factorization technique with 3D-aware conditionals that reduces modes in the solution space to circumvent local optima, improving scene consistency compared to <a href="#comparisons">baselines</a>. 
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!--==================== BIBTEX SECTION ====================-->
+    <section class="home section container">
+        <div class="paper__section-title">BibTeX</div>
+        <div class="bibtex-container">
+            <pre id="bibtex-text">@article{duan2025controllable,
+  title={Controllable Video Synthesis via Variational Inference},
+  author={Duan, Haoyi and Zhang, Yunzhi and Du, Yilun and Wu, Jiajun},
+  journal={arXiv preprint arXiv:2025.XXXXX},
+  year={2025}
+}</pre>
+            <button class="bibtex-copy-btn" id="bibtex-copy">
+                <i class="fas fa-copy"></i> Copy BibTeX
+            </button>
+        </div>
+    </section>
+
+</main>
+<script src="./assets/main.js"></script>
+<script src="template/assets/main.js"></script>
+</body>
+</html>
