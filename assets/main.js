@@ -14,6 +14,78 @@ function toggleExpandable(button) {
     }
 }
 
+// 智能视频播放控制 - 50%可见时暂停
+function setupSmartVideoPlayback() {
+    const videos = document.querySelectorAll('video');
+    
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.5 // 50%可见时播放，50%以下暂停
+    };
+    
+    const handleIntersection = (entries, observer) => {
+        entries.forEach(entry => {
+            const video = entry.target;
+            const visibleRatio = entry.intersectionRatio;
+            
+            if (visibleRatio >= 0.5) {
+                // 50%以上可见 - 播放
+                if (video.paused && video.readyState >= 2) {
+                    video.play().catch(e => console.log('播放失败:', e));
+                }
+            } else {
+                // 50%以下可见 - 暂停
+                if (!video.paused) {
+                    video.pause();
+                }
+            }
+        });
+    };
+    
+    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+    
+    videos.forEach(video => {
+        video.muted = true;
+        video.loop = true;
+        video.preload = 'metadata';
+        video.setAttribute('playsinline', '');
+        
+        observer.observe(video);
+    });
+}
+
+// 延迟加载视频源
+function setupLazyVideoLoading() {
+    const videos = document.querySelectorAll('video[data-src]');
+    
+    const lazyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const video = entry.target;
+                const dataSrc = video.getAttribute('data-src');
+                
+                if (dataSrc && !video.src) {
+                    video.src = dataSrc;
+                    video.load();
+                }
+                
+                lazyObserver.unobserve(video);
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    videos.forEach(video => {
+        lazyObserver.observe(video);
+    });
+}
+
+// 完整的视频优化系统
+function setupOptimizedVideoSystem() {
+    setupSmartVideoPlayback();
+    setupLazyVideoLoading();
+}
+
 // 视频自动循环播放设置
 function setupVideoAutoplay() {
     const videos = document.querySelectorAll('video');
@@ -321,8 +393,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 设置视频自动播放
-    setupVideoAutoplay();
+    // 设置优化的视频系统
+    setupOptimizedVideoSystem();
     
     // 设置可展开内容中的视频处理
     setupExpandableVideoHandling();
