@@ -191,7 +191,13 @@
                             </video>
                         </div>
                         <div>
-                            <video playsinline controls loop muted preload="none" loading="lazy" src="./data/cameras/move_left.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
+                            <!-- 将视频改为真正的懒加载 -->
+                            <video 
+                                data-src="./data/cameras/move_left.mp4#t=0.001" 
+                                preload="none" 
+                                loading="lazy"
+                                style="display: none;">
+                            </video>
                         </div>
                         <div>
                             <video playsinline controls loop muted preload="none" loading="lazy" src="./data/simulations/pigeon_watersplash.mp4#t=0.001" type="video/mp4" style="border-radius: 4px;"></video>
@@ -1656,28 +1662,16 @@ To address the optimization challenge, the problem is broken down into step-wise
 function setupVideoLazyLoading() {
     const videos = document.querySelectorAll('video[loading="lazy"]');
     
+    // 只在视频进入视口时才加载
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            const video = entry.target;
-            
             if (entry.isIntersecting) {
-                // Video is in viewport - load and play
-                if (video.dataset.src) {
-                    video.src = video.dataset.src;
-                    video.removeAttribute('data-src');
-                }
-                
-                video.load();
-                video.play().catch(e => console.log('Lazy video play failed:', e));
-                
-                // Stop observing this video
-                observer.unobserve(video);
+                const video = entry.target;
+                video.src = video.dataset.src;
+                video.style.display = 'block';
             }
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '50px'
-    });
+    }, { threshold: 0.1 });
 
     videos.forEach(video => observer.observe(video));
 }
