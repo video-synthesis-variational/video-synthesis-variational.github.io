@@ -51,7 +51,31 @@ function setupSmartVideoPlayback() {
         video.preload = 'metadata';
         video.setAttribute('playsinline', '');
         
-        observer.observe(video);
+        // 特殊处理：如果是第一个示例（dog-balloon）中的视频，使用更激进的播放策略
+        const isFirstExample = video.closest('#dog-balloon');
+        if (isFirstExample) {
+            // 为第一个示例使用更激进的播放策略
+            const forcePlay = () => {
+                if (video.paused && video.readyState >= 2) {
+                    video.play().catch(e => console.log('第一个示例视频播放失败:', e));
+                }
+            };
+            
+            // 立即尝试播放
+            forcePlay();
+            
+            // 监听视频事件，确保播放
+            video.addEventListener('loadedmetadata', forcePlay);
+            video.addEventListener('loadeddata', forcePlay);
+            video.addEventListener('canplay', forcePlay);
+            video.addEventListener('canplaythrough', forcePlay);
+            
+            // 延迟重试
+            setTimeout(forcePlay, 500);
+            setTimeout(forcePlay, 1000);
+        } else {
+            observer.observe(video);
+        }
     });
 }
 
@@ -82,8 +106,94 @@ function setupLazyVideoLoading() {
 
 // 完整的视频优化系统
 function setupOptimizedVideoSystem() {
-    setupSmartVideoPlayback();
+    setupSmartVideoPlaybackWithFirstExampleFix();
     setupLazyVideoLoading();
+}
+
+// 智能视频播放控制 - 修复第一个示例问题
+function setupSmartVideoPlaybackWithFirstExampleFix() {
+    const videos = document.querySelectorAll('video');
+    
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.5 // 50%可见时播放，50%以下暂停
+    };
+    
+    const handleIntersection = (entries, observer) => {
+        entries.forEach(entry => {
+            const video = entry.target;
+            const visibleRatio = entry.intersectionRatio;
+            
+            if (visibleRatio >= 0.5) {
+                // 50%以上可见 - 播放
+                if (video.paused && video.readyState >= 2) {
+                    video.play().catch(e => console.log('播放失败:', e));
+                }
+            } else {
+                // 50%以下可见 - 暂停
+                if (!video.paused) {
+                    video.pause();
+                }
+            }
+        });
+    };
+    
+    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+    
+    videos.forEach(video => {
+        video.muted = true;
+        video.loop = true;
+        video.preload = 'metadata';
+        video.setAttribute('playsinline', '');
+        
+        // 特殊处理：如果是第一个示例（dog-balloon）中的视频
+        const isFirstExample = video.closest('#dog-balloon');
+        if (isFirstExample) {
+            // 为第一个示例使用更激进的播放策略，但保留暂停功能
+            const forcePlay = () => {
+                if (video.paused && video.readyState >= 2) {
+                    video.play().catch(e => console.log('第一个示例视频播放失败:', e));
+                }
+            };
+            
+            // 立即尝试播放
+            forcePlay();
+            
+            // 监听视频事件，确保播放
+            video.addEventListener('loadedmetadata', forcePlay);
+            video.addEventListener('loadeddata', forcePlay);
+            video.addEventListener('canplay', forcePlay);
+            video.addEventListener('canplaythrough', forcePlay);
+            
+            // 延迟重试
+            setTimeout(forcePlay, 500);
+            setTimeout(forcePlay, 1000);
+            
+            // 仍然使用 Intersection Observer，但使用更宽松的阈值
+            const firstExampleObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    const visibleRatio = entry.intersectionRatio;
+                    
+                    if (visibleRatio >= 0.1) { // 10%可见就播放
+                        if (video.paused && video.readyState >= 2) {
+                            video.play().catch(e => console.log('第一个示例视频播放失败:', e));
+                        }
+                    } else {
+                        if (!video.paused) {
+                            video.pause();
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            firstExampleObserver.observe(video);
+        } else {
+            // 其他视频使用正常的 Intersection Observer
+            observer.observe(video);
+        }
+    });
 }
 
 // 视频自动循环播放设置
